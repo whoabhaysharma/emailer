@@ -4,11 +4,20 @@ import { buildDashboardModel, renderDashboard } from "../dashboard.js"
 
 const CLEAR = "\x1b[2J\x1b[H"
 
+/** Writing into `| head` should end quietly, not crash with EPIPE. */
+function exitOnClosedPipe() {
+  process.stdout.on("error", (error) => {
+    if (error?.code === "EPIPE") process.exit(0)
+  })
+}
+
 /**
  * Print the dashboard once, as JSON, or refresh it in a loop.
  * All I/O lives here so the model and renderer stay pure and testable.
  */
 export async function dashboardCommand(flags = {}) {
+  exitOnClosedPipe()
+
   const json = flags.json === true
   const watch = !json && flags.watch !== undefined && flags.watch !== false
   const color = flags["no-color"] !== true
