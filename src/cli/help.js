@@ -47,6 +47,7 @@ Operations
   service install|uninstall|status  run on login (launchd/systemd)
   doctor                            verify config, credentials, SMTP/IMAP
   config show|set|edit|path
+  update [--check]                  pull the latest release, migrate, restart
 
 Config examples
   config set dryRun=false

@@ -63,6 +63,20 @@ opencode-email-agent account test sales
 App passwords: enable 2-Step Verification, create one at
 <https://myaccount.google.com/apppasswords>, and enable IMAP in Gmail settings.
 
+## Updating
+
+```bash
+opencode-email-agent update --check   # is a newer release available?
+opencode-email-agent update           # back up, pull, install, init, restart
+opencode-email-agent service status   # confirm the daemon is back
+```
+
+`update` refuses to run on a dirty tree, backs up the SQLite database first, pulls
+fast-forward only, reinstalls dependencies, re-runs `init` (your edited agents and
+commands are kept), restarts the service, and checks `/health`. Installed from
+npm instead? It prints the `npm i -g` commands. See [UPDATING.md](UPDATING.md) for
+backups, manual fallback, release policy, and rollback.
+
 ## Daily use
 
 In OpenCode:
@@ -279,6 +293,7 @@ opencode-email-agent sync
 opencode-email-agent reclassify [--dry-run]
 opencode-email-agent daemon [--port 8787] [--once]
 opencode-email-agent service install|uninstall|status
+opencode-email-agent update [--check]
 opencode-email-agent config show|set|edit|path
 ```
 

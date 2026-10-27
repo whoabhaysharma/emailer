@@ -26,6 +26,7 @@ import {
   threadCommand,
 } from "./commands/mail.js"
 import { setupCommand } from "./commands/setup.js"
+import { updateCommand } from "./commands/update.js"
 import { printHelp } from "./help.js"
 import { fail } from "./io.js"
 
@@ -137,6 +138,10 @@ export async function run(argv = process.argv.slice(2)) {
 
       case "status":
         await statusCommand()
+        break
+
+      case "update":
+        await updateCommand(flags)
         break
 
       case "version":

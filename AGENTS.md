@@ -57,7 +57,7 @@ src/
     args.js  io.js  context.js  install.js  help.js
     dashboard.js         pure model + text renderer for the overview screen
     commands/            init, setup, account, doctor, mail, contacts,
-                         campaign, config, daemon, dashboard
+                         campaign, config, daemon, dashboard, update
   mail/                  IMAP, SMTP, MIME, address helpers
   store.js               SQLite schema + additive migrations
   triage.js              deterministic reply rules
@@ -80,9 +80,25 @@ dependencies belong to the daemon.
 - Domain modules receive collaborators explicitly; no module imports `service.js`.
 - Schema changes are additive and go through `migrate()` in `src/store.js`.
 
+## Releases and updates
+
+`update [--check]` (`src/cli/commands/update.js`) is the user-facing upgrade path.
+It resolves the newest `vX.Y.Z` tag, refuses a dirty tree, backs up `agent.db`,
+runs `git pull --ff-only`, `npm install --omit=dev`, `init`, reinstalls the
+service, and probes `/health`. Non-git installs get the `npm i -g` instructions.
+The pure helpers (`parseVersion`, `compareVersions`, `changelogSection`) stay
+free of filesystem access and are covered by `test/update.test.js`.
+
+Release flow: bump `package.json` and `src/version.js` together, add a
+`CHANGELOG.md` section, run the tests, commit, then `git tag -a vX.Y.Z` and
+`git push --follow-tags`. CI (`.github/workflows/ci.yml`) runs on every push and
+PR; the tag push triggers `.github/workflows/release.yml`, which creates the
+GitHub Release. npm publishing is manual and is not in CI. See `UPDATING.md`.
+
 ## Verify a change
 
 ```bash
 npm test
 node --check $(find src -name '*.js')
+node src/cli.js update --check
 ```

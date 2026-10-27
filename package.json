@@ -1,6 +1,6 @@
 {
   "name": "opencode-email-agent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Multi-account email marketing agent for OpenCode. Gmail/IMAP + SMTP over app passwords, reply tracking, Gmail drafts, and drip campaigns.",
   "type": "module",
   "license": "MIT",
@@ -16,6 +16,8 @@
     "src",
     "assets",
     "AGENTS.md",
+    "CHANGELOG.md",
+    "UPDATING.md",
     "README.md",
     "LICENSE"
   ],
