@@ -178,6 +178,8 @@ without sending anything.
 - Business-hours window with timezone and jitter on delayed steps.
 - Duplicate protection: same recipient + subject within 12h is refused.
 - CC/BCC and recipient-count limits.
+- New addresses are allowed: a saved contact is not required unless
+  `requireConsent` is turned on.
 
 **Replies**
 - Thread matching via `In-Reply-To` / `References`, subject + participants, then

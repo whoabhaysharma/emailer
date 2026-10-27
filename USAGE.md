@@ -49,6 +49,19 @@ Draft a reply to Abhay saying Tuesday 3pm works.
 
 The draft goes into the same Gmail thread. The human presses send.
 
+### Email someone new
+
+You do not have to save a contact first. Give the agent the address and the
+context you have:
+
+```
+Draft an intro to priya@example.com. We met at the conference; she runs ops.
+```
+
+The agent uses only what you gave it, does not invent history, and does not
+require a contact record. A saved contact is still required when
+`requireConsent` is turned on.
+
 ### Send an update to a list
 
 1. Put `email,name,company` in a CSV.

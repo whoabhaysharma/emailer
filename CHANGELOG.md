@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-10-28
+
+### Changed
+
+- The email-marketer agent may now write to a new address the user supplies
+  without a saved contact. It still must not invent history or facts; it uses
+  only the contact record, the conversation, or what the user provided.
+- Softened the pre-send check: `email.contact` and `email.search` are required
+  for known addresses, not for a brand-new one.
+- The playbook and usage guide document new-address outreach. `requireConsent`
+  remains the only setting that gates unknown contacts, and it is off by default.
+
 ## [0.4.0] - 2026-10-28
 
 ### Added
