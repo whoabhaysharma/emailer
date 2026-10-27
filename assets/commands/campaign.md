@@ -20,8 +20,9 @@ Steps:
    (previews go to the account owner).
 7. Enrol only the contacts the user named. If they gave a file, ask them to
    provide the path.
-8. Stop and wait for approval before `email.campaign_status` with `running`.
+8. Start when the user says go. A clear "start it" in chat is enough; you do not
+   need a separate formal approval.
 
-Never start a campaign in the same turn it was created unless the user said
-"start it now" in this conversation. If anything looks wrong while a campaign is
+You can start a campaign in the same turn when the user said to start it.
+Otherwise show the preview first. If anything looks wrong while a campaign is
 running, call `email.pause_all` first and ask questions later.

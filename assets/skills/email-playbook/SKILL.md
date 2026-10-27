@@ -11,7 +11,8 @@ When the address is already known, answer these from `email.contact` and
 `email.thread`:
 
 - Who is this person, what do they do, and what have we already said to them?
-- Why would they care this week? If you cannot name a concrete reason, do not send.
+- Why would they care this week? If you cannot name a reason, keep it short and
+  ask a genuine question instead of inventing urgency.
 - What is the single next step you want? One question, one ask.
 
 For a new address the user supplied, you do not need a saved contact record.
@@ -40,7 +41,8 @@ Do not add them yourself unless the user turned the footer off.
 - Reply in the same thread; never start a new subject for a follow-up.
 - Add one new piece of value per touch: a relevant example, a short insight, a
   changed circumstance. "Just bumping this" is not value.
-- Three touches maximum after the first, spaced 3-5 business days. Then stop.
+- Three or four touches after the first is usually enough, spaced 3-5 business
+  days. Stop earlier if they reply or clearly lose interest.
 - If they reply at any point, the sequence ends. Always.
 
 ## Objection handling
@@ -57,7 +59,8 @@ Do not add them yourself unless the user turned the footer off.
 
 - Plain text, no tracking pixels, no link shorteners, at most one link.
 - No image-only emails, no attachments on a first touch.
-- Never buy lists. Never email role addresses harvested from directories.
+- Never buy lists. Prefer a named person; generic role addresses are usually a
+  lower-quality contact.
 - Keep per-account volume low and consistent. Sudden spikes look like abuse.
 - Honour opt-outs immediately and permanently. One complaint costs more than a
   hundred sends.
@@ -79,4 +82,4 @@ Do not add them yourself unless the user turned the footer off.
 - Pretending to have met, worked together, or spoken before.
 - Inventing case studies, customer names, metrics, or deadlines.
 - Continuing a sequence after a reply or opt-out.
-- Sending from a personal Gmail account at volume.
+- Blasting high volume from a brand-new Gmail account. Warm up first.

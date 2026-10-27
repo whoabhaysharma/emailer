@@ -1,4 +1,4 @@
-export const VERSION = "0.4.2"
+export const VERSION = "0.4.3"
 export const MIN_NODE_MAJOR = 22
 export const MIN_NODE_MINOR = 5
 

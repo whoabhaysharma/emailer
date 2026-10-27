@@ -4,6 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-10-28
+
+### Changed
+
+- Softened the email-marketer rules. Sending is no longer framed as an
+  exception: drafts stay the default, but a clear "send it" is enough.
+- One-off sends to a few people are fine; campaigns are for real volume. The
+  `email.send` description no longer forbids all multi-recipient sends.
+- Ambiguity rule now says to use judgment and ask only when a mistake would be
+  costly or irreversible, instead of asking every time.
+- Campaign start and prospect enrolment no longer require a separate formal
+  approval; a clear "start it" is enough.
+- Playbook: follow-ups are "usually three or four" rather than a hard maximum,
+  and role addresses are a quality warning rather than an absolute ban.
+- Kept the hard limits: suppression, daily caps, stop-on-reply, no invented
+  facts, and no credentials in chat.
+
 ## [0.4.2] - 2026-10-28
 
 ### Changed

@@ -15,8 +15,8 @@ Prepare a prospect list for: $ARGUMENTS
    suppressed removed, missing names, missing company.
 4. Do not enrich with guessed data. If a field is unknown, leave it empty -
    templates render empty strings.
-5. Only after the user approves the cleaned list, create or reuse a campaign and
-   enrol.
+5. Once the list looks clean, create or reuse a campaign and enrol. Start it
+   when the user says go.
 
 Never purchase, scrape, or guess addresses. If the list looks bought, say so and
 stop.

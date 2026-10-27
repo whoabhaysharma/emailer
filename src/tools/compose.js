@@ -49,7 +49,7 @@ export function createComposeTools(client) {
     ),
     tool(
       "send",
-      "Send one email immediately. Requires confirm:true after a clear approval in chat. Never call this for bulk outreach; use a campaign instead. Respects suppression list, daily limits, and duplicate protection.",
+      "Send one email immediately. Requires confirm:true after a clear approval in chat. For a real list, use a campaign instead. Respects suppression list, daily limits, and duplicate protection.",
       {
         type: "object",
         properties: {
