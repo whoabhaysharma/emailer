@@ -115,3 +115,34 @@ test("automated and newsletter dispositions never suppress or stop sequences", (
     assert.equal(disposition.contactStatus, null)
   }
 })
+
+test("a positive reply quoting our unsubscribe footer is not an opt-out", () => {
+  const body = [
+    "Hey I would like to connect seems interesting when can we do it",
+    "",
+    "On Tue, 27 Oct 2026 at 17:25, ClickBoost Media <team@clickboostmedia.com> wrote:",
+    "> Hi Abhay,",
+    "> Following up on the limo sites.",
+    "> --",
+    "> Team, ClickBoost Media",
+    "> Unsubscribe: mailto:team@clickboostmedia.com"
+  ].join("\n")
+  const message = parsed({
+    from: "whoabhaysharma@gmail.com",
+    subject: "Re: Abhay — a quick idea for the limo sites",
+    text: body,
+    inReplyTo: "<parent@example.com>",
+    references: ["<parent@example.com>"]
+  })
+  assert.equal(ruleTriage(message, body), null)
+})
+
+test("a genuine unsubscribe reply still works", () => {
+  const message = parsed({
+    from: "person@example.com",
+    subject: "Re: Hello",
+    text: "Please unsubscribe me from this list.",
+    inReplyTo: "<parent@example.com>"
+  })
+  assert.equal(ruleTriage(message, message.text), "unsubscribe")
+})
