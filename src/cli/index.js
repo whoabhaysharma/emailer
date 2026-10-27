@@ -11,6 +11,7 @@ import {
 import { campaignCommand, pauseAllCommand, resumeAllCommand } from "./commands/campaign.js"
 import { configCommand } from "./commands/config.js"
 import { contactsCommand } from "./commands/contacts.js"
+import { dashboardCommand } from "./commands/dashboard.js"
 import { daemonCommand, serviceCommand, statusCommand } from "./commands/daemon.js"
 import { doctorCommand } from "./commands/doctor.js"
 import { initCommand } from "./commands/init.js"
@@ -72,6 +73,10 @@ export async function run(argv = process.argv.slice(2)) {
 
       case "inbox":
         await inboxCommand(flags)
+        break
+
+      case "dashboard":
+        await dashboardCommand(flags)
         break
 
       case "stats":

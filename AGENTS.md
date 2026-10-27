@@ -55,8 +55,9 @@ src/
   cli/
     index.js             command dispatch
     args.js  io.js  context.js  install.js  help.js
+    dashboard.js         pure model + text renderer for the overview screen
     commands/            init, setup, account, doctor, mail, contacts,
-                         campaign, config, daemon
+                         campaign, config, daemon, dashboard
   mail/                  IMAP, SMTP, MIME, address helpers
   store.js               SQLite schema + additive migrations
   triage.js              deterministic reply rules

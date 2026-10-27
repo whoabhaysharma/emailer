@@ -38,7 +38,7 @@ PATH, run `node src/cli.js setup` from the repo.
 
 - `~/.config/opencode/agents/email-marketer.md` and `inbox-triage.md`
 - `~/.config/opencode/skills/email-playbook/SKILL.md`
-- `~/.config/opencode/commands/{inbox,campaign,prospect,report}.md`
+- `~/.config/opencode/commands/{inbox,campaign,prospect,report,status}.md`
 - `~/.config/opencode/plugins/email-agent.js` (the loader shim)
 - a launchd / systemd user service
 
@@ -69,6 +69,7 @@ In OpenCode:
 
 ```text
 /inbox        triage replies, classify them, draft responses
+/status       one-screen dashboard of inbox, drafts, and campaigns
 /report       funnel and campaign metrics
 /campaign …   design a sequence and enrol contacts
 /prospect …   clean a list before outreach
@@ -80,6 +81,7 @@ saying we can start Monday"*, *"pause the Q4 campaign"*.
 From the CLI:
 
 ```bash
+opencode-email-agent dashboard --no-color
 opencode-email-agent inbox
 opencode-email-agent search --query invoice
 opencode-email-agent thread <threadId>
@@ -287,7 +289,7 @@ opencode-email-agent config show|set|edit|path
   agents/email-marketer.md
   agents/inbox-triage.md
   skills/email-playbook/SKILL.md
-  commands/{inbox,campaign,prospect,report}.md
+  commands/{inbox,campaign,prospect,report,status}.md
   plugins/email-agent.js          # loader shim (absolute path to this repo)
   email-agent/
     config.json

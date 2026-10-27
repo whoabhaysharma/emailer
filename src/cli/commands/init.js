@@ -28,6 +28,7 @@ export async function initCommand(flags) {
     installAsset("commands/campaign.md", join(commandsDir, "campaign.md"), force),
     installAsset("commands/prospect.md", join(commandsDir, "prospect.md"), force),
     installAsset("commands/report.md", join(commandsDir, "report.md"), force),
+    installAsset("commands/status.md", join(commandsDir, "status.md"), force),
   ]
 
   const shim = installPluginShim()

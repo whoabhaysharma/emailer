@@ -16,6 +16,7 @@ Setup
   secret set <id>                   store the Google app password
 
 Daily use
+  dashboard [--watch] [--json]      one-screen overview of inbox, drafts, campaigns
   inbox                             replies needing triage + pending drafts
   search [--query q] [--from a]     search stored messages
   thread <id>                       print a conversation
