@@ -303,6 +303,28 @@ opencode-email-agent config show|set|edit|path
 Back up the config directory. The database can be rebuilt from IMAP, but campaign
 history and notes would be lost.
 
+## Code layout
+
+```
+src/
+  index.js        plugin entry (no dependencies)
+  client.js       HTTP client + daemon auto-start
+  service.js      composition root
+  domain/         contacts, enrolments, threads, messages, outbound,
+                  campaigns, sync, metrics, shared helpers
+  tools/          read / compose / campaign / contact / ops tool groups
+  http/           server, responder, one module per route group
+  cli/            argument parsing, IO, install, one module per command group
+  mail/           IMAP, SMTP, MIME, address helpers
+  store.js        SQLite schema and migrations
+  triage.js       deterministic reply rules
+  unsubscribe.js  HMAC tokens
+```
+
+Each domain module receives its collaborators as arguments, so the dependency
+graph is acyclic and every module can be tested in isolation. `service.js` only
+wires them together.
+
 ## Troubleshooting
 
 **Tools do not appear in OpenCode** — check `opencode plugin list`. It should show

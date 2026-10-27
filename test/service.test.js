@@ -45,7 +45,7 @@ writeFileSync(join(home, "token"), "test-token\n")
 const { openStore } = await import("../src/store.js")
 const { createService } = await import("../src/service.js")
 const { getAccount } = await import("../src/config.js")
-const { createTools } = await import("../src/tools.js")
+const { createTools } = await import("../src/tools/index.js")
 
 const store = openStore()
 const service = createService(store)

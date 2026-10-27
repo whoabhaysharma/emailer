@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs"
 import { createService } from "./service.js"
-import { createHttpServer } from "./server.js"
+import { createHttpServer } from "./http/server.js"
 import { openStore } from "./store.js"
 import { ensureToken, loadConfig, readToken } from "./config.js"
 import { closeTransports } from "./mail/smtp.js"

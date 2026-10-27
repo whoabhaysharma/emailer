@@ -1,7 +1,7 @@
 import { appendFileSync, mkdirSync } from "node:fs"
 import { join } from "node:path"
 import { makeClient } from "./client.js"
-import { createTools } from "./tools.js"
+import { createTools } from "./tools/index.js"
 import { DATA } from "./paths.js"
 
 function logLoad(message) {
