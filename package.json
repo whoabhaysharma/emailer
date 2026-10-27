@@ -1,0 +1,37 @@
+{
+  "name": "opencode-email-agent",
+  "version": "0.1.0",
+  "description": "Multi-account email marketing agent for OpenCode. Gmail/IMAP + SMTP over app passwords, reply tracking, Gmail drafts, and drip campaigns.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "opencode-email-agent": "./src/cli.js",
+    "ocemail": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./cli": "./src/cli.js"
+  },
+  "files": [
+    "src",
+    "assets",
+    "AGENTS.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "init": "node src/cli.js init",
+    "start": "node src/cli.js daemon",
+    "doctor": "node src/cli.js doctor",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "imapflow": "^2.9.1",
+    "jsonc-parser": "^3.3.1",
+    "mailparser": "^3.12.4",
+    "nodemailer": "^10.2.1"
+  }
+}
