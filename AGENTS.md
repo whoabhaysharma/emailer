@@ -11,18 +11,23 @@ opencode-email-agent setup
 ```
 
 `setup` = `init` + account creation + service install. `init` writes the plugin
-loader shim at `~/.config/opencode/plugins/email-agent.js` (OpenCode ignores local
-paths in the `plugins` config array) and copies the agent, skill, and commands.
-It never overwrites an edited file unless `--force` is passed.
+loader package directory at `~/.config/opencode/plugins/email-agent/` (OpenCode
+ignores local paths in the `plugins` config array) and copies the agent, skill,
+and commands. The directory's `package.json` exposes the server part as `.` and
+the TUI part as `./tui`. It never overwrites an edited file unless `--force` is
+passed.
 
 ## Architecture
 
 ```
 src/
   index.js               OpenCode plugin entry (dependency-free)
+  tui.jsx                OpenCode TUI part: /email route and home footer
   client.js              local HTTP client, token, daemon auto-start
   service.js             composition root; wires domain modules together
   version.js
+  dashboard/
+    model.js             shared read-only dashboard projection (CLI + TUI + HTTP)
   domain/
     shared.js            time, message-id, footer, window, limit helpers
     contacts.js          contacts, suppression, consent, status
@@ -50,12 +55,12 @@ src/
       messages.js        /search, /threads, /drafts, /reply, /send
       contacts.js        /contacts, /suppress, /suppressions
       campaigns.js       /campaigns, preview, pause-all
-      ops.js             /stats, /unclassified, /classify, /tick
+      ops.js             /stats, /dashboard, /unclassified, /classify, /tick
   cli.js                 thin executable entry
   cli/
     index.js             command dispatch
     args.js  io.js  context.js  install.js  help.js
-    dashboard.js         pure model + text renderer for the overview screen
+    dashboard.js         text renderer; re-exports the shared model
     commands/            init, setup, account, doctor, mail, contacts,
                          campaign, config, daemon, dashboard, update
   mail/                  IMAP, SMTP, MIME, address helpers
@@ -99,6 +104,25 @@ GitHub Release. npm publishing is manual and is not in CI. See `UPDATING.md`.
 
 ```bash
 npm test
+npm run check:jsx
 node --check $(find src -name '*.js')
 node src/cli.js update --check
 ```
+
+### Verify the TUI plugin loads
+
+`npm run check:jsx` only proves the JSX transforms; it cannot render the TUI
+headlessly. After `node src/cli.js init`:
+
+1. `opencode plugin list` must show `email-agent` (source resolves to
+   `.../plugins/email-agent/server.js`), and
+   `opencode api get /api/plugin` must report `"features":{"server":true,"tui":true}`.
+2. `opencode api post /api/location/reload`, wait ~3s, then
+   `tail -5 ~/.local/share/opencode/email-agent/plugin.log` must show a fresh
+   `setup:start` from the server part.
+3. `curl -s http://127.0.0.1:8787/health` must still report healthy, and
+   `/dashboard` must answer with the bearer token.
+
+If the directory does not load, keep the server shim working and add a
+TUI-only directory instead; never leave a state where `plugin list` omits the
+plugin.

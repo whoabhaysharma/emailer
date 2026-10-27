@@ -1,7 +1,13 @@
+import { buildDashboardModel } from "../../dashboard/model.js"
+
 export async function handleOps(ctx) {
   const { service, method, path, url, readBody } = ctx
 
   if (method === "GET" && path === "/stats") return { body: service.stats() }
+
+  if (method === "GET" && path === "/dashboard") {
+    return { body: buildDashboardModel(service, { daemon: { running: true } }) }
+  }
 
   if (method === "GET" && path === "/unclassified") {
     return { body: { messages: service.unclassified(url.searchParams.get("limit") || 20) } }

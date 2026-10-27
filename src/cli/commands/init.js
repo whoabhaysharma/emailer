@@ -4,7 +4,7 @@ import { join } from "node:path"
 import { ensureLayout, ensureToken, loadConfig, saveConfig } from "../../config.js"
 import { accountsFile, agentsDir, commandsDir, configFile, DATA, skillsDir } from "../../paths.js"
 import { formatPath } from "../io.js"
-import { installAsset, installPluginShim, removeLegacyPluginEntry } from "../install.js"
+import { installAsset, installPluginPackage, removeLegacyPluginEntry } from "../install.js"
 
 export async function initCommand(flags) {
   ensureLayout()
@@ -31,14 +31,14 @@ export async function initCommand(flags) {
     installAsset("commands/status.md", join(commandsDir, "status.md"), force),
   ]
 
-  const shim = installPluginShim()
+  const plugin = installPluginPackage()
   const legacy = removeLegacyPluginEntry()
 
   console.log("email-agent initialised\n")
   console.log(`  config     ${formatPath(configFile)}`)
   console.log(`  accounts   ${formatPath(accountsFile)}`)
   console.log(`  database   ${formatPath(join(DATA, "agent.db"))}`)
-  console.log(`  plugin     ${formatPath(shim.file)}${shim.changed ? "" : " (unchanged)"}`)
+  console.log(`  plugin     ${formatPath(plugin.dir)}${plugin.changed ? "" : " (unchanged)"}`)
   if (legacy.removed) console.log(`  cleaned    legacy plugins entry in ${formatPath(legacy.file)}`)
 
   for (const item of installed) {
@@ -51,6 +51,6 @@ export async function initCommand(flags) {
   console.log("  opencode-email-agent setup           # guided setup in one command")
   console.log("  opencode-email-agent doctor          # verify credentials and config")
   console.log("  opencode-email-agent service install # run 24/7\n")
-  console.log("Then in OpenCode: /inbox")
-  if (shim.changed || legacy.removed) console.log("Run /reload in OpenCode so it picks up the plugin.")
+  console.log("Then in OpenCode: /email for the TUI dashboard, /inbox to triage")
+  if (plugin.changed || legacy.removed) console.log("Run /reload in OpenCode so it picks up the plugin.")
 }

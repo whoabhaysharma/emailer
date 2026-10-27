@@ -1,6 +1,6 @@
 {
   "name": "opencode-email-agent",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Multi-account email marketing agent for OpenCode. Gmail/IMAP + SMTP over app passwords, reply tracking, Gmail drafts, and drip campaigns.",
   "type": "module",
   "license": "MIT",
@@ -10,7 +10,8 @@
   },
   "exports": {
     ".": "./src/index.js",
-    "./cli": "./src/cli.js"
+    "./cli": "./src/cli.js",
+    "./tui": "./src/tui.jsx"
   },
   "files": [
     "src",
@@ -28,12 +29,21 @@
     "init": "node src/cli.js init",
     "start": "node src/cli.js daemon",
     "doctor": "node src/cli.js doctor",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check:jsx": "esbuild src/tui.jsx --loader:.jsx=jsx --jsx=automatic --jsx-import-source=solid-js --format=esm --outfile=/tmp/opencode-email-tui.check.js"
   },
   "dependencies": {
     "imapflow": "^2.9.1",
     "jsonc-parser": "^3.3.1",
     "mailparser": "^3.12.4",
     "nodemailer": "^10.2.1"
+  },
+  "peerDependencies": {
+    "@opentui/core": ">=0.6.6",
+    "@opentui/solid": ">=0.6.6",
+    "solid-js": ">=1.9.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

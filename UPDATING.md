@@ -40,6 +40,22 @@ From a git checkout, `update`:
 
 Nothing is published and no email is sent by an update.
 
+### Plugin loader moved from a file shim to a package directory
+
+Up to 0.2.0, `init` wrote a single file shim at
+`~/.config/opencode/plugins/email-agent.js`. From 0.3.0 it writes a plugin
+**package directory** at `~/.config/opencode/plugins/email-agent/` with
+`package.json`, `server.js`, and `tui.js`. OpenCode auto-loads plugin
+directories that have a `name` and `exports`, and only a package can expose a
+`./tui` part, which is what adds the `/email` dashboard and the home-footer
+status.
+
+`init` performs the migration: it writes the directory and removes the old
+`email-agent.js` so the server part is not loaded twice. Restart OpenCode (or
+run `/reload`) afterwards so the TUI part is picked up; the daemon and your
+config are untouched. If you keep the plugin directory under version control
+somewhere else, update that copy too.
+
 ### If you installed from npm
 
 `update` detects a non-git install and prints:

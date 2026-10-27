@@ -39,10 +39,11 @@ PATH, run `node src/cli.js setup` from the repo.
 - `~/.config/opencode/agents/email-marketer.md` and `inbox-triage.md`
 - `~/.config/opencode/skills/email-playbook/SKILL.md`
 - `~/.config/opencode/commands/{inbox,campaign,prospect,report,status}.md`
-- `~/.config/opencode/plugins/email-agent.js` (the loader shim)
+- `~/.config/opencode/plugins/email-agent/` (the loader package: server + TUI)
 - a launchd / systemd user service
 
-Run `/reload` in OpenCode, then `/inbox`.
+Run `/reload` in OpenCode (restart it once for the TUI part), then `/email` or
+`/inbox`.
 
 ### Install on another machine
 
@@ -82,8 +83,9 @@ backups, manual fallback, release policy, and rollback.
 In OpenCode:
 
 ```text
+/email        TUI dashboard of inbox, drafts, and campaigns (r refreshes, esc goes home)
 /inbox        triage replies, classify them, draft responses
-/status       one-screen dashboard of inbox, drafts, and campaigns
+/status       ask the agent to explain the dashboard and what needs attention
 /report       funnel and campaign metrics
 /campaign …   design a sequence and enrol contacts
 /prospect …   clean a list before outreach
@@ -101,6 +103,11 @@ opencode-email-agent search --query invoice
 opencode-email-agent thread <threadId>
 opencode-email-agent stats
 ```
+
+`/email` renders inside the TUI and has a home-footer status line; the CLI
+`dashboard` command remains the terminal-only view (and still powers `/status`).
+The TUI reads the daemon's `/dashboard` endpoint, so it shows the same numbers
+without sending anything.
 
 ## What it does now
 
@@ -305,7 +312,10 @@ opencode-email-agent config show|set|edit|path
   agents/inbox-triage.md
   skills/email-playbook/SKILL.md
   commands/{inbox,campaign,prospect,report,status}.md
-  plugins/email-agent.js          # loader shim (absolute path to this repo)
+  plugins/email-agent/            # loader package (server.js + tui.js)
+    package.json
+    server.js
+    tui.js
   email-agent/
     config.json
     accounts.json                 # identities, no passwords
@@ -346,9 +356,14 @@ wires them together.
 ## Troubleshooting
 
 **Tools do not appear in OpenCode** — check `opencode plugin list`. It should show
-`email-agent  local  ~/.config/opencode/plugins/email-agent.js`. If not, run
-`opencode-email-agent init`, then `/reload`. `cat ~/.local/share/opencode/email-agent/plugin.log`
-shows whether the plugin's `setup` ran.
+`email-agent  local  ~/.config/opencode/plugins/email-agent` (OpenCode may display
+the resolved `server.js` entry). If not, run `opencode-email-agent init`, then
+`/reload`. `cat ~/.local/share/opencode/email-agent/plugin.log` shows whether the
+plugin's `setup` ran.
+
+**`/email` is missing from the TUI** — the TUI part loads only from the plugin
+package directory. Run `opencode-email-agent init`, restart OpenCode (the TUI
+part is not hot-reloaded like commands), then check `opencode plugin list`.
 
 **`Invalid login` / `Application-specific password required`** — no app password,
 or 2FA is off. Re-run `secret set`.

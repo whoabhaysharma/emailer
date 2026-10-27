@@ -4,6 +4,28 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-27
+
+### Added
+
+- OpenCode TUI plugin (`src/tui.jsx`): a `/email` route with the live dashboard
+  and a `home.footer.status` line, with `r` to refresh and `escape` to go home.
+- Shared `GET /dashboard` HTTP endpoint behind the existing bearer auth, so the
+  TUI, the CLI dashboard, and `/status` render one model.
+- `src/dashboard/model.js`: the read-only dashboard projection shared by the
+  CLI and the TUI.
+- `npm run check:jsx` (esbuild transform check) and OpenTUI/Solid peer
+  dependencies.
+
+### Changed
+
+- The OpenCode loader is now a plugin **package directory** at
+  `~/.config/opencode/plugins/email-agent/` (`package.json`, `server.js`,
+  `tui.js`) instead of an `email-agent.js` file shim. `init` migrates existing
+  installs and removes the legacy file.
+- README documents `/email` for the TUI and keeps `/status` as the agent's
+  explanation; the CLI `dashboard` command remains for terminal use.
+
 ## [0.2.0] - 2026-10-27
 
 ### Added
