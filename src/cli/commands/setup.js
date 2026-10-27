@@ -4,6 +4,7 @@ import { ensureLayout, ensureToken, loadAccounts, loadConfig, saveConfig } from 
 import { configFile } from "../../paths.js"
 import { ask, askYes, fail, promptHidden } from "../io.js"
 import { addAccount } from "./account.js"
+import { initCommand } from "./init.js"
 import { serviceCommand } from "./daemon.js"
 import { doctorCommand } from "./doctor.js"
 
@@ -16,6 +17,15 @@ export async function setupCommand(flags) {
   if (!cfg.unsubscribeSecret) saveConfig({ unsubscribeSecret: randomBytes(32).toString("hex") })
 
   console.log("OpenCode email agent setup\n")
+
+  // Install the agent, skill, commands, and plugin loader before asking for
+  // credentials. This is what makes `npm i -g` (or a tarball install) enough on
+  // a fresh machine: setup no longer leaves OpenCode without the assets.
+  const init = await initCommand({ ...flags, quiet: true })
+  if (init.plugin.registered) console.log("plugin: registered in OpenCode")
+  else if (init.plugin.dir) console.log(`plugin: ${init.plugin.dir}`)
+  else console.log("plugin: skipped (--no-plugin)")
+  console.log("agents, commands, and skill: installed\n")
 
   if (!loadAccounts().length) {
     if (!process.stdin.isTTY && !flags.email) {

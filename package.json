@@ -1,9 +1,32 @@
 {
   "name": "opencode-email-agent",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Multi-account email marketing agent for OpenCode. Gmail/IMAP + SMTP over app passwords, reply tracking, Gmail drafts, and drip campaigns.",
   "type": "module",
   "license": "MIT",
+  "author": "Abhay Sharma",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoabhaysharma/emailer.git"
+  },
+  "homepage": "https://github.com/whoabhaysharma/emailer#readme",
+  "bugs": {
+    "url": "https://github.com/whoabhaysharma/emailer/issues"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "email",
+    "imap",
+    "smtp",
+    "gmail",
+    "campaigns",
+    "drip",
+    "outreach"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "opencode-email-agent": "./src/cli.js",
     "ocemail": "./src/cli.js"
@@ -11,7 +34,8 @@
   "exports": {
     ".": "./src/index.js",
     "./cli": "./src/cli.js",
-    "./tui": "./src/tui.jsx"
+    "./tui": "./src/tui.jsx",
+    "./package.json": "./package.json"
   },
   "files": [
     "src",
@@ -31,7 +55,8 @@
     "start": "node src/cli.js daemon",
     "doctor": "node src/cli.js doctor",
     "test": "node --test test/*.test.js",
-    "check:jsx": "esbuild src/tui.jsx --loader:.jsx=jsx --jsx=automatic --jsx-import-source=solid-js --format=esm --outfile=/tmp/opencode-email-tui.check.js"
+    "check:jsx": "esbuild src/tui.jsx --loader:.jsx=jsx --jsx=automatic --jsx-import-source=solid-js --format=esm --outfile=/tmp/opencode-email-tui.check.js",
+    "prepublishOnly": "npm test && npm run check:jsx"
   },
   "dependencies": {
     "imapflow": "^2.9.1",
@@ -40,9 +65,24 @@
     "nodemailer": "^10.2.1"
   },
   "peerDependencies": {
+    "@opencode/plugin": ">=2.2.0",
     "@opentui/core": ">=0.6.6",
     "@opentui/solid": ">=0.6.6",
     "solid-js": ">=1.9.0"
+  },
+  "peerDependenciesMeta": {
+    "@opencode/plugin": {
+      "optional": true
+    },
+    "@opentui/core": {
+      "optional": true
+    },
+    "@opentui/solid": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "esbuild": "^0.28.2"

@@ -62,11 +62,14 @@ somewhere else, update that copy too.
 
 ```bash
 npm i -g opencode-email-agent@latest
+opencode-email-agent init
 opencode-email-agent service install
 ```
 
-Run both. The first replaces the package, the second points the service at the
-new install and restarts it.
+Run all three. The first replaces the package, the second installs any new
+agents/commands/skill and refreshes the loader, the third points the service at
+the new install and restarts it. If you registered the package with
+`opencode plugin add` instead of the loader, use `init --no-plugin`.
 
 ### Manual fallback
 

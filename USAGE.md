@@ -6,7 +6,7 @@ limits.
 
 ## The 30-second version
 
-1. `opencode-email-agent setup`
+1. `npm i -g opencode-email-agent && opencode-email-agent setup`
 2. Restart OpenCode (or `/reload` for server plugins)
 3. `/status` or `/email` to see what needs you
 4. `/inbox` to triage replies; drafts land in Gmail for review

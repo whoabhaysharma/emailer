@@ -69,6 +69,7 @@ function npmInstructions(version) {
   console.log("")
   console.log("Update with:")
   console.log("  npm i -g opencode-email-agent@latest")
+  console.log("  opencode-email-agent init")
   console.log("  opencode-email-agent service install")
 }
 

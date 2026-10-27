@@ -4,6 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-10-28
+
+### Added
+
+- Installable package metadata: `repository`, `homepage`, `bugs`, `keywords`,
+  `publishConfig`, a `./package.json` export, and a `prepublishOnly` check.
+  The TUI peers (`@opencode/plugin`, OpenTUI, Solid) are optional so a global
+  CLI install stays small and OpenCode supplies them at runtime.
+- `setup` now installs the OpenCode agents, skill, commands, and plugin loader
+  itself, so `npm i -g opencode-email-agent && opencode-email-agent setup` is
+  enough on a fresh machine.
+- `init` detects a package already registered through `opencode plugin add`
+  (by package name, Git specifier, or local path) and skips the local loader,
+  removing an older loader so the plugin is not loaded twice.
+- `init --no-plugin` skips plugin registration entirely.
+- `test/install.test.js` covers asset installation, registration detection, and
+  loader ownership.
+
+### Docs
+
+- README documents the npm, Git, tarball, and `opencode plugin add` install
+  paths, and notes that a global install is available in every OpenCode
+  project on the machine.
+
 ## [0.3.1] - 2026-10-27
 
 ### Docs

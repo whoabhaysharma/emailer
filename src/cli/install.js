@@ -22,6 +22,85 @@ export function installAsset(sourceRelative, destination, force = false) {
   return { destination, changed: true }
 }
 
+function readOpencodeConfig() {
+  const jsonPath = join(opencodeConfigDir, "opencode.json")
+  const jsoncPath = join(opencodeConfigDir, "opencode.jsonc")
+  const file = existsSync(jsonPath) ? jsonPath : existsSync(jsoncPath) ? jsoncPath : null
+  if (!file) return { file: null, parsed: {} }
+  return { file, parsed: parseJsonc(readFileSync(file, "utf8")) || {} }
+}
+
+function entrySpec(entry) {
+  if (typeof entry === "string") return entry
+  if (entry && typeof entry === "object" && typeof entry.package === "string") return entry.package
+  return ""
+}
+
+function normalizeTarget(value) {
+  return String(value || "")
+    .replace(/^git\+/, "")
+    .replace(/^github:/, "https://github.com/")
+    .replace(/^git@github\.com:/, "https://github.com/")
+    .replace(/\.git$/, "")
+    .replace(/\/+$/, "")
+}
+
+function repositorySlug(repository) {
+  const value = typeof repository === "string" ? repository : repository?.url
+  if (!value) return ""
+  const match = normalizeTarget(value).match(/github\.com\/([^/]+)\/([^/]+)/i)
+  return match ? `${match[1]}/${match[2]}`.toLowerCase() : ""
+}
+
+/**
+ * Is this exact package already listed in OpenCode's `plugins` config?
+ *
+ * `opencode plugin add` registers the package by name or Git specifier, and
+ * OpenCode then loads its server and TUI parts directly. Writing the local
+ * loader shim as well would load the plugin twice.
+ */
+export function findPluginRegistration() {
+  const { file, parsed } = readOpencodeConfig()
+  if (!file) return { file: null, registered: false }
+
+  const manifest = JSON.parse(readFileSync(join(packageRoot, "package.json"), "utf8"))
+  const name = String(manifest.name || "")
+  const slug = repositorySlug(manifest.repository)
+  const entries = Array.isArray(parsed.plugins) ? parsed.plugins : []
+
+  for (const entry of entries) {
+    const spec = entrySpec(entry)
+    if (!spec) continue
+    const target = normalizeTarget(spec)
+    const bare = target.startsWith("npm:") ? target.slice(4) : target
+    const matchesName = Boolean(name) && (bare === name || bare.startsWith(`${name}@`))
+    const matchesRepo = Boolean(slug) && target.toLowerCase().includes(slug)
+    if (matchesName || matchesRepo) return { file, registered: true, entry: spec }
+  }
+
+  return { file, registered: false }
+}
+
+/**
+ * Remove the local loader package written by init, but only when it is ours.
+ * A loader owned by another checkout is left alone.
+ */
+export function removePluginPackage() {
+  const dir = join(pluginsDir, "email-agent")
+  const manifest = join(dir, "package.json")
+  if (!existsSync(manifest)) return { dir, removed: false }
+
+  try {
+    const parsed = JSON.parse(readFileSync(manifest, "utf8"))
+    if (parsed.name !== "opencode-email-agent-local") return { dir, removed: false }
+  } catch {
+    return { dir, removed: false }
+  }
+
+  rmSync(dir, { recursive: true, force: true })
+  return { dir, removed: true }
+}
+
 /**
  * OpenCode auto-loads plugin *directories* under <config>/plugins when they have
  * a package.json with `name` and `exports`. A directory lets the same entry

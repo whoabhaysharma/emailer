@@ -17,6 +17,17 @@ and commands. The directory's `package.json` exposes the server part as `.` and
 the TUI part as `./tui`. It never overwrites an edited file unless `--force` is
 passed.
 
+## Packaging
+
+`npm pack` builds the installable tarball (`src`, `assets`, and the docs).
+`package.json` exposes `.` (server), `./tui`, and `./cli`; the TUI peers are
+optional because OpenCode supplies them at runtime. `prepublishOnly` runs the
+tests and the JSX check. Publish with `npm publish`.
+
+If OpenCode already loads the package through `opencode plugin add` (npm name or
+Git specifier), `init` detects the registration and skips the local loader so the
+plugin is not loaded twice. `init --no-plugin` forces that behaviour.
+
 ## Architecture
 
 ```

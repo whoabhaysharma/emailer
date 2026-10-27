@@ -26,17 +26,72 @@ enforced in code rather than in a prompt.
 Requires **Node 22.5+** (uses the built-in `node:sqlite`, so there are no native
 modules to compile).
 
+### From npm (recommended)
+
 ```bash
-git clone <this-repo> ~/opencode-email-agent
+npm i -g opencode-email-agent
+opencode-email-agent setup
+```
+
+`setup` installs the OpenCode agents, commands, skill, and plugin loader, walks
+through account, app password, limits, footer, compliance address, dry-run mode,
+and installs the background service. Then run `/reload` in OpenCode (restart it
+once for the TUI part) and open `/email` or `/inbox`.
+
+A global install lives in OpenCode's global config, so the plugin is available in
+**every project** on that machine. Nothing is project-specific.
+
+### From GitHub
+
+No npm publish is required:
+
+```bash
+npm i -g github:whoabhaysharma/emailer
+opencode-email-agent setup
+```
+
+### From a tarball (offline)
+
+```bash
+npm pack                                  # in this repo, writes opencode-email-agent-X.Y.Z.tgz
+npm i -g ./opencode-email-agent-X.Y.Z.tgz
+opencode-email-agent setup
+```
+
+Copy the `.tgz` to any machine and install it there. `npm pack --dry-run` shows
+exactly what ships (`src`, `assets`, and the docs).
+
+### Through OpenCode's plugin manager
+
+OpenCode can install the package itself, which also gives you the `/email` TUI
+part:
+
+```bash
+opencode plugin add opencode-email-agent
+# or, before publishing to npm:
+opencode plugin add github:whoabhaysharma/emailer
+```
+
+Then install the CLI once for the daemon, credentials, and agents/commands:
+
+```bash
+npm i -g opencode-email-agent
+opencode-email-agent setup --no-plugin
+```
+
+`--no-plugin` tells setup not to write the local loader, because OpenCode already
+loads the package directly. Running setup without it is safe too: `init` detects
+the registration and skips the loader automatically.
+
+### From a git checkout (for development)
+
+```bash
+git clone https://github.com/whoabhaysharma/emailer.git ~/opencode-email-agent
 cd ~/opencode-email-agent
 npm install
 npm link                    # optional: gives you the `opencode-email-agent` command
 opencode-email-agent setup
 ```
-
-`setup` walks through account, app password, limits, footer, compliance address,
-dry-run mode, and installing the background service. If `npm link` is not on your
-PATH, run `node src/cli.js setup` from the repo.
 
 `setup` installs:
 
@@ -46,16 +101,9 @@ PATH, run `node src/cli.js setup` from the repo.
 - `~/.config/opencode/plugins/email-agent/` (the loader package: server + TUI)
 - a launchd / systemd user service
 
-Run `/reload` in OpenCode (restart it once for the TUI part), then `/email` or
-`/inbox`.
-
-### Install on another machine
-
-Same four commands. Nothing is machine-specific. Re-running `init` is safe: it
-never overwrites files you edited unless you pass `--force`.
-
-If you move the repository, run `opencode-email-agent init` again so the plugin
-shim points at the new path.
+Re-running `init` is safe: it never overwrites files you edited unless you pass
+`--force`. If you move a checkout, run `opencode-email-agent init` again so the
+loader points at the new path.
 
 ### Add another account
 
@@ -79,8 +127,16 @@ opencode-email-agent service status   # confirm the daemon is back
 `update` refuses to run on a dirty tree, backs up the SQLite database first, pulls
 fast-forward only, reinstalls dependencies, re-runs `init` (your edited agents and
 commands are kept), restarts the service, and checks `/health`. Installed from
-npm instead? It prints the `npm i -g` commands. See [UPDATING.md](UPDATING.md) for
-backups, manual fallback, release policy, and rollback.
+npm instead? Run:
+
+```bash
+npm i -g opencode-email-agent@latest
+opencode-email-agent init
+opencode-email-agent service install
+```
+
+See [UPDATING.md](UPDATING.md) for backups, manual fallback, release policy, and
+rollback.
 
 ## Daily use
 

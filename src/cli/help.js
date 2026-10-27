@@ -6,8 +6,8 @@ export function printHelp() {
 Usage: opencode-email-agent <command> [options]
 
 Setup
-  setup                             guided setup: account, password, footer, service
-  init [--force]                    install agent, skill, commands, plugin shim
+  setup [--no-plugin]               guided setup: install assets, account, service
+  init [--force] [--no-plugin]      install agent, skill, commands, plugin loader
   account add --email <addr>        add another sending account
         [--id sales] [--name "Name"] [--daily-limit 40]
         [--warmup-start 20 --warmup-increment 10 --warmup-max 40]
