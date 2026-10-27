@@ -157,3 +157,24 @@ export async function draftCommand(flags) {
 export async function syncCommand() {
   await withService(async (instance) => printJson(await instance.syncAll()))
 }
+
+export async function reclassifyCommand(flags) {
+  await withService(async (instance) => {
+    const result = instance.reclassify({ dryRun: flags["dry-run"] === true, limit: flags.limit })
+    if (flags.json) return printJson(result)
+
+    console.log(
+      `${result.changed} of ${result.scanned} message(s) ${result.dryRun ? "would change" : "changed"}`,
+    )
+    if (result.changes.length) {
+      console.table(
+        result.changes.map((change) => ({
+          from: change.from,
+          was: change.fromIntent || "pending",
+          now: change.toIntent || "pending",
+          subject: String(change.subject || "").slice(0, 48),
+        })),
+      )
+    }
+  })
+}

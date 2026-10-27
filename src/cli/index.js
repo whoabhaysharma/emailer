@@ -17,6 +17,7 @@ import { initCommand } from "./commands/init.js"
 import {
   draftCommand,
   inboxCommand,
+  reclassifyCommand,
   searchCommand,
   sendCommand,
   statsCommand,
@@ -111,6 +112,10 @@ export async function run(argv = process.argv.slice(2)) {
 
       case "sync":
         await syncCommand()
+        break
+
+      case "reclassify":
+        await reclassifyCommand(flags)
         break
 
       case "daemon":

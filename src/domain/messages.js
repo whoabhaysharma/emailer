@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto"
 import { stripHtml } from "../mail/mime.js"
 import { normalizeEmail } from "../mail/address.js"
 import { TRIAGE_INTENTS, ruleTriage, triageDisposition } from "../triage.js"
-import { clamp, insertMessage, normalizeMessageId, nowIso, referenceList } from "./shared.js"
+import { clamp, insertMessage, normalizeMessageId, nowIso, parseRefs, referenceList } from "./shared.js"
 
 export function createMessages({ store, contacts, threads, enrolments }) {
   function recordInbound(account, parsed, meta = {}) {
@@ -25,7 +25,15 @@ export function createMessages({ store, contacts, threads, enrolments }) {
 
     const threadId = threads.resolveThreadId(account.id, { fromAddr, subject, inReplyTo, refs, gmailThreadId }) || randomUUID()
 
-    contacts.ensureContact({ email: fromAddr, name: fromValue.name || null, source: "inbound", consentAt: nowIso() })
+    const verdict = ruleTriage(parsed, text)
+    const disposition = verdict ? triageDisposition(verdict) : null
+    const historical = Boolean(meta.historical)
+    const needsTriage = verdict || historical ? 0 : 1
+
+    // Machine mail should not pollute the contact list.
+    if (verdict !== "automated" && verdict !== "newsletter") {
+      contacts.ensureContact({ email: fromAddr, name: fromValue.name || null, source: "inbound", consentAt: nowIso() })
+    }
     threads.touchThread({
       id: threadId,
       accountId: account.id,
@@ -35,11 +43,6 @@ export function createMessages({ store, contacts, threads, enrolments }) {
       at: parsed.date?.toISOString?.() || nowIso(),
       unread: true,
     })
-
-    const verdict = ruleTriage(parsed, text)
-    const disposition = verdict ? triageDisposition(verdict) : null
-    const historical = Boolean(meta.historical)
-    const needsTriage = verdict || historical ? 0 : 1
 
     const id = randomUUID()
     insertMessage(store, {
@@ -255,5 +258,49 @@ export function createMessages({ store, contacts, threads, enrolments }) {
     return { id: params.id, intent, disposition, notBefore }
   }
 
-  return { recordInbound, recordSentSync, searchMessages, unclassified, classifyMessage }
+  /**
+   * Re-run deterministic rules over stored inbound mail that no human/agent has
+   * classified yet. Headers are not stored, so this uses sender, subject, body,
+   * and threading. Safe by default: dry-run returns the diff without writing.
+   */
+  function reclassify({ dryRun = false, limit = 5000 } = {}) {
+    const rows = store.all(
+      `SELECT id, from_addr, subject, body_text, in_reply_to, refs, triage_intent, needs_triage
+       FROM messages
+       WHERE direction = 'in' AND triage_json IS NULL
+       ORDER BY created_at DESC LIMIT ?`,
+      clamp(limit, 1, 50_000),
+    )
+
+    const changes = []
+    for (const row of rows) {
+      const body = row.body_text || ""
+      const verdict = ruleTriage(
+        {
+          from: { value: [{ address: row.from_addr, name: "" }] },
+          subject: row.subject,
+          text: body,
+          headers: new Map(),
+          inReplyTo: row.in_reply_to,
+          references: parseRefs(row.refs),
+        },
+        body,
+      )
+
+      const intent = verdict || row.triage_intent || null
+      const needsTriage = intent ? 0 : 1
+
+      if (intent === row.triage_intent && needsTriage === Number(row.needs_triage)) continue
+
+      changes.push({ id: row.id, from: row.from_addr, subject: row.subject, fromIntent: row.triage_intent, toIntent: intent })
+      if (!dryRun) {
+        store.run("UPDATE messages SET triage_intent = ?, needs_triage = ? WHERE id = ?", intent, needsTriage, row.id)
+      }
+    }
+
+    if (!dryRun && changes.length) store.event("messages.reclassified", { data: { changed: changes.length, scanned: rows.length } })
+    return { scanned: rows.length, changed: changes.length, dryRun, changes: changes.slice(0, 100) }
+  }
+
+  return { recordInbound, recordSentSync, searchMessages, unclassified, classifyMessage, reclassify }
 }

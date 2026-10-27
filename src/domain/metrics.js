@@ -2,6 +2,10 @@ import { loadAccounts, publicAccount } from "../config.js"
 import { countSent, effectiveDailyLimit, hoursAgo } from "./shared.js"
 import { VERSION } from "../version.js"
 
+/** Inbound mail from a human. Newsletters, notifications, bounces and OOO are excluded. */
+const HUMAN_REPLY = `direction = 'in' AND COALESCE(triage_intent, '') NOT IN ('newsletter','automated','archived','ooo','bounce')`
+const RECEIVED_AT = "COALESCE(received_at, created_at)"
+
 export function createMetrics({ store, config }) {
   function dailySentCount(accountId = null) {
     return countSent(store, accountId)
@@ -14,7 +18,7 @@ export function createMetrics({ store, config }) {
     const accounts = loadAccounts().map((account) => {
       const replies = Number(
         store.get(
-          "SELECT COUNT(*) AS count FROM messages WHERE account_id = ? AND direction = 'in' AND created_at > ?",
+          `SELECT COUNT(*) AS count FROM messages WHERE account_id = ? AND ${HUMAN_REPLY} AND ${RECEIVED_AT} > ?`,
           account.id,
           since,
         )?.count || 0,
@@ -54,9 +58,10 @@ export function createMetrics({ store, config }) {
       accounts,
       totals: {
         contacts: one("SELECT COUNT(*) AS count FROM contacts"),
-        replies: one("SELECT COUNT(*) AS count FROM messages WHERE direction = 'in'"),
-        uniqueRepliers: one("SELECT COUNT(DISTINCT from_addr) AS count FROM messages WHERE direction = 'in'"),
-        replies24h: one("SELECT COUNT(*) AS count FROM messages WHERE direction = 'in' AND created_at > ?", since),
+        inbound: one("SELECT COUNT(*) AS count FROM messages WHERE direction = 'in'"),
+        replies: one(`SELECT COUNT(*) AS count FROM messages WHERE ${HUMAN_REPLY}`),
+        uniqueRepliers: one(`SELECT COUNT(DISTINCT from_addr) AS count FROM messages WHERE ${HUMAN_REPLY}`),
+        replies24h: one(`SELECT COUNT(*) AS count FROM messages WHERE ${HUMAN_REPLY} AND ${RECEIVED_AT} > ?`, since),
         sent: totalSent,
         sent24h: one("SELECT COUNT(*) AS count FROM messages WHERE direction = 'out' AND status = 'sent' AND created_at > ?", since),
         simulated24h: one(

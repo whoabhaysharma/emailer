@@ -15,5 +15,9 @@ export async function handleOps(ctx) {
     return { body: await service.tickCampaigns() }
   }
 
+  if (method === "POST" && path === "/reclassify") {
+    return { body: service.reclassify(await readBody()) }
+  }
+
   return undefined
 }

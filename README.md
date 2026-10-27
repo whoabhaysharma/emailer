@@ -269,11 +269,12 @@ opencode-email-agent search [--query q] [--from a] [--limit 25] [--json]
 opencode-email-agent thread <id>
 opencode-email-agent send --to a@b.com --subject "…" --text "…" --confirm
 opencode-email-agent draft --to a@b.com --subject "…" --text "…"
-opencode-email-agent contacts list|show|import|status
+opencode-email-agent contacts list|show|import|status|prune
 opencode-email-agent campaign list|create|preview|enrol|start|pause|resume|done|tick
 opencode-email-agent campaign pause-all|resume-all
 opencode-email-agent stats [--json]
 opencode-email-agent sync
+opencode-email-agent reclassify [--dry-run]
 opencode-email-agent daemon [--port 8787] [--once]
 opencode-email-agent service install|uninstall|status
 opencode-email-agent config show|set|edit|path

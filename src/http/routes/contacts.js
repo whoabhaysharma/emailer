@@ -19,6 +19,10 @@ export async function handleContacts(ctx) {
     return { body: service.setContactStatus(body.email, body.status, body.notBefore) }
   }
 
+  if (method === "POST" && path === "/contacts/prune") {
+    return { body: service.pruneContacts(await readBody()) }
+  }
+
   const contactMatch = path.match(/^\/contacts\/([^/]+)$/)
   if (method === "GET" && contactMatch) {
     const email = decodeURIComponent(contactMatch[1])

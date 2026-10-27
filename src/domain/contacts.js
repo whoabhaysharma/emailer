@@ -141,6 +141,34 @@ export function createContacts({ store, enrolments }) {
     store.run("UPDATE contacts SET last_contacted_at = ? WHERE email = ?", nowIso(), normalizeEmail(email))
   }
 
+  /**
+   * Remove contacts that only ever sent newsletters or notifications and are not
+   * enrolled anywhere. Contacts with no messages (imported lists) are kept.
+   */
+  function pruneContacts({ dryRun = false } = {}) {
+    const rows = store.all(`
+      SELECT c.email FROM contacts c
+      WHERE EXISTS (SELECT 1 FROM messages m WHERE m.from_addr = c.email)
+        AND NOT EXISTS (
+          SELECT 1 FROM messages m
+          WHERE m.from_addr = c.email
+            AND COALESCE(m.triage_intent, '') NOT IN ('newsletter', 'automated', 'archived')
+        )
+        AND NOT EXISTS (SELECT 1 FROM enrolments e WHERE e.contact_email = c.email)
+    `)
+
+    if (!dryRun) {
+      for (const row of rows) store.run("DELETE FROM contacts WHERE email = ?", row.email)
+    }
+
+    return {
+      dryRun,
+      candidates: rows.length,
+      removed: dryRun ? 0 : rows.length,
+      emails: rows.map((row) => row.email).slice(0, 100),
+    }
+  }
+
   function appendNote(email, note) {
     if (!note) return
     const existing = getContact(email)
@@ -163,6 +191,7 @@ export function createContacts({ store, enrolments }) {
     setContactStatus,
     importContacts,
     touchContact,
+    pruneContacts,
     appendNote,
     contactVars,
   }

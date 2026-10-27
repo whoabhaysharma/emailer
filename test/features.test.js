@@ -70,12 +70,13 @@ test("newsletter auto-replies do not stop a sequence", async () => {
   })
   service.enrolContacts({ campaignId: campaign.id, contacts: [{ email: "dave@example.com", name: "Dave" }] })
 
+  const repliesBefore = service.stats().totals.replies
   service.recordInbound(
     account,
     inbound({
       from: "dave@example.com",
       messageId: "<nl-1@example.com>",
-      text: "Monthly digest from somewhere",
+      text: "Monthly digest from somewhere. Unsubscribe here.",
       headers: new Map([["list-id", "<digest.example.com>"]]),
     }),
     { uid: 10 },
@@ -87,6 +88,7 @@ test("newsletter auto-replies do not stop a sequence", async () => {
     "dave@example.com",
   )
   assert.equal(row.state, "active")
+  assert.equal(service.stats().totals.replies, repliesBefore, "newsletter must not count as a reply")
 })
 
 test("out-of-office replies postpone the next step instead of stopping it", async () => {

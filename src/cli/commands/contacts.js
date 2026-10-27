@@ -49,6 +49,10 @@ export async function contactsCommand(action, flags, positional) {
       return printJson(instance.setContactStatus(email, status, flags["not-before"]))
     }
 
+    if (action === "prune") {
+      return printJson(instance.pruneContacts({ dryRun: flags["dry-run"] === true }))
+    }
+
     fail(`unknown contacts action: ${action}`)
   })
 }

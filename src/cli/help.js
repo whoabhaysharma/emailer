@@ -28,6 +28,7 @@ Contacts
   contacts import --file contacts.csv [--consented]
   contacts show <email>
   contacts status <email> <status> [--not-before 2027-01-01]
+  contacts prune [--dry-run]        drop contacts that only sent newsletters
 
 Campaigns
   campaign list
@@ -40,6 +41,7 @@ Campaigns
 
 Operations
   sync                              sync inbox + sent once
+  reclassify [--dry-run]            re-run triage rules on stored inbound mail
   daemon [--port 8787] [--once]
   service install|uninstall|status  run on login (launchd/systemd)
   doctor                            verify config, credentials, SMTP/IMAP
