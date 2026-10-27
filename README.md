@@ -2,6 +2,10 @@
 
 A multi-account email marketing agent for [OpenCode](https://opencode.ai).
 
+[Usage guide](USAGE.md)
+
+New here? Read [USAGE.md](USAGE.md) for the daily loop, commands, and limits.
+
 Drafts replies inside Gmail for human approval, tracks conversations, stops
 sequences the moment someone answers, and runs drip campaigns with hard safety
 limits. Works with Gmail app passwords or any IMAP/SMTP provider.
