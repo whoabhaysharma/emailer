@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-10-28
+
+### Changed
+
+- Removed the repeated email consent prompt. The email-marketer agent now has
+  `email.send` and `email.campaign.write` set to `allow`; the send tool still
+  requires `confirm: true`, and a campaign still starts only after an explicit
+  status change.
+- Rule 1 now says a clear "send it" or "yes" in chat is approval. The agent asks
+  once per batch, not once per message, and does not ask for written consent or
+  signed forms.
+- The playbook no longer tells the agent to keep consent records. If the user
+  says they have permission, the agent proceeds.
+- `requireConsent` is still off by default and remains the only contact gate when
+  explicitly enabled.
+
 ## [0.4.1] - 2026-10-28
 
 ### Changed

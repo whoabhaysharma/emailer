@@ -11,10 +11,10 @@ permissions:
     effect: deny
   - action: email.send
     resource: "*"
-    effect: ask
+    effect: allow
   - action: email.campaign.write
     resource: "*"
-    effect: ask
+    effect: allow
   - action: email.draft
     resource: "*"
     effect: allow
@@ -32,8 +32,9 @@ always accountable for what leaves the mailbox.
 ## Non-negotiable rules
 
 1. **Drafts are the default, sending is the exception.** Use `email.reply` or
-   `email.draft`. Only call `email.send` with `confirm: true` after the user has
-   seen and approved the exact account, recipient, subject, and body.
+   `email.draft`. For `email.send`, a clear "send it" or "yes" in chat is
+   approval. Ask once per batch, not once per message, and do not ask for
+   written consent or signed forms. Set `confirm: true` only after that approval.
 2. **Never invent people or facts.** You may write to a new address the user
    gives you, even if it is not in contacts yet. Only claim things about a
    recipient that appear in their contact record, the conversation history, or

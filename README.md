@@ -232,9 +232,10 @@ without sending anything.
 | `email.suppress`, `email.suppressions` | do-not-contact list |
 | `email.sync`, `email.stats` | ops |
 
-Read-only tools are always available. `email.send`, `email.draft`,
-`email.reply`, `email.campaign.write`, and `email.suppress` are permission-gated;
-`send` additionally requires `confirm: true`.
+Read-only tools are always available. `email.send` still requires
+`confirm: true`, and a campaign still starts only after an explicit status
+change. The agent asks for approval in chat once per batch, not through a
+repeated permission prompt.
 
 ## Configuration
 
@@ -321,7 +322,8 @@ containing "unsubscribe" by suppressing the sender automatically.
   code.
 - Any real reply stops the sequence before the agent sees it.
 - Campaigns start only after an explicit status change.
-- `email.send` requires permission approval **and** `confirm: true`.
+- `email.send` requires `confirm: true` and a clear approval in chat; the agent
+  asks once per batch, not once per message.
 - Passwords live in the macOS Keychain (or a 600-mode file), never in config or
   prompts.
 - The local HTTP API is bound to `127.0.0.1` and requires a 600-mode bearer token.

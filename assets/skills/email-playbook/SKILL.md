@@ -69,7 +69,8 @@ Do not add them yourself unless the user turned the footer off.
 - Include a working unsubscribe path (configure `unsubscribeUrl`).
 - Subject lines must describe the content. No "Re:" or "Fwd:" fakery on a first
   touch.
-- Keep a record of consent for any list you import.
+- If the user says they already have permission for a list, take them at their
+  word and proceed. Do not demand signed consent forms or ask again.
 
 ## Red flags to refuse
 

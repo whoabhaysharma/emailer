@@ -112,7 +112,7 @@ opencode-email-agent dashboard
 
 ## What the agent will not do
 
-- Send without approval (`confirm: true` plus a permission prompt).
+- Send without approval (`confirm: true` plus a clear "send it" in chat).
 - Email anyone on the suppression list or with a blocked status.
 - Invent contacts, history, case studies, or metrics.
 - Bulk-send outside an approved campaign.
