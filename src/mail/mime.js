@@ -45,15 +45,17 @@ export function listUnsubscribeHeaders(url, account = {}) {
   return headers
 }
 
-export function composeFooter(config, account = {}) {
+export function composeFooter(config, account = {}, { includeUnsubscribe = true } = {}) {
   const parts = []
   const signature = account.signature || config.signature
   const address = account.footerAddress || config.footerAddress
   const mailto = account.unsubscribeMailto || config.unsubscribeMailto
   if (signature) parts.push(signature)
   if (address) parts.push(address)
-  if (config.unsubscribeUrl) parts.push(`Unsubscribe: ${config.unsubscribeUrl}`)
-  else if (mailto) parts.push(`Unsubscribe: mailto:${mailto}`)
+  if (includeUnsubscribe) {
+    if (config.unsubscribeUrl) parts.push(`Unsubscribe: ${config.unsubscribeUrl}`)
+    else if (mailto) parts.push(`Unsubscribe: mailto:${mailto}`)
+  }
   return parts.filter(Boolean).join("\n")
 }
 

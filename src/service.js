@@ -378,7 +378,7 @@ export function createService(store) {
 
   function bodyWithFooter(text, cfg, account, { bulk, unsubscribeUrl, noFooter }) {
     if (noFooter) return text
-    const parts = [composeFooter(cfg, account)]
+    const parts = [composeFooter(cfg, account, { includeUnsubscribe: bulk && !unsubscribeUrl })]
     if (bulk && unsubscribeUrl) parts.push(`Unsubscribe: ${unsubscribeUrl}`)
     return applyFooter(text, parts.filter(Boolean).join("\n"))
   }
